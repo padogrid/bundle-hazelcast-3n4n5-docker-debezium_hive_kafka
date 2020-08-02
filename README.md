@@ -16,7 +16,7 @@ install_bundle -download bundle-hazelcast-3n4-docker-debezium_hive_kafka
 
 This use case ingests data changes made in the MySQL database into a Hazelcast cluster via Kafka connectors and also integrates Apache Hive for querying Kafka topics as external tables and views. It extends [the original Debezium-Kafka bundle](https://github.com/padogrid/bundle-hazelcast-3n4-docker-debezium_kafka) with Docker compose, Apache Hive, and  the North Wind mock data for `customers` and `orders` tables. It includes the MySQL source connector and the `hazelcast-addon` Debezium sink connectors.
 
-![Debezium-Hive-Kafka Diagram](/images/debezium-hive-kafka.png)
+![Debezium-Hive-Kafka Diagram](/images/debezium-hive-kafka.jpg)
 
 ## Required Software
 
