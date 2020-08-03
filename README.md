@@ -30,7 +30,7 @@ This use case ingests data changes made in the MySQL database into a Hazelcast c
 
 ## Building Demo
 
-We must first build the demo by running the `build_app` command as shown below. This command copies the Hazelcast and `hazelcast-addon-core` jar files to the Docker container mounted volume in the `padogrid` directory so that the Hazelcast Debezium Kafka connector can include them in its class path.
+We must first build the demo by running the `build_app` command as shown below. This command copies the Hazelcast and `hazelcast-addon-core` jar files to the Docker container mounted volume in the `padogrid` directory so that the Hazelcast Debezium Kafka connector can include them in its class path. It also downloads the Hive JDBC driver jar and its dependencies in the `padogrid/lib/jdbc` directory.
 
 ```console
 cd_docker debezium_hive_kafka; cd bin_sh
@@ -45,13 +45,28 @@ tree padogrid
 ```
 
 ```console
-padogrid/
+padogrid
 ├── etc
 │   └── hazelcast-client.xml
 ├── lib
 │   ├── hazelcast-addon-common-0.9.3-SNAPSHOT.jar
 │   ├── hazelcast-addon-core-4-0.9.3-SNAPSHOT.jar
-│   └── hazelcast-enterprise-all-4.0.1.jar
+│   ├── hazelcast-enterprise-all-4.0.1.jar
+│   └── jdbc
+│       ├── commons-logging-1.2.jar
+│       ├── curator-client-2.12.0.jar
+│       ├── guava-19.0.jar
+│       ├── hadoop-common-2.6.0.jar
+│       ├── hive-common-3.1.2.jar
+│       ├── hive-jdbc-3.1.2.jar
+│       ├── hive-metastore-3.1.2.jar
+│       ├── hive-serde-3.1.2.jar
+│       ├── hive-service-3.1.2.jar
+│       ├── hive-service-rpc-3.1.2.jar
+│       ├── httpclient-4.5.2.jar
+│       ├── httpcore-4.4.4.jar
+│       ├── libthrift-0.9.3.jar
+│       └── slf4j-api-1.7.10.jar
 ├── log
 └── plugins
     └── hazelcast-addon-core-4-0.9.3-SNAPSHOT-tests.jar
@@ -437,6 +452,43 @@ cd bin_sh
 ```
 
 ![Desktop Screenshot](/images/desktop-inventory-customers.png)
+
+
+### JDBC Browser
+
+To browse Kafka stream data using Hive via JDBC, add all the jar files in the `padogrid/lib/jdbc` directory in the class path and configure your client with the following.
+
+- JDBC URL: `jdbc:hive2://localhost:10000/default`
+- Dirver Class Name: `org.apache.hive.jdbc.HiveDriver`
+
+```bash
+cd_docker debezium_hive_kafka
+tree padogrid/lib/jdbc
+```
+
+**Output (JDBC jar files):**
+
+```console
+padogrid/lib/jdbc
+├── commons-logging-1.2.jar
+├── curator-client-2.12.0.jar
+├── guava-19.0.jar
+├── hadoop-common-2.6.0.jar
+├── hive-common-3.1.2.jar
+├── hive-jdbc-3.1.2.jar
+├── hive-metastore-3.1.2.jar
+├── hive-serde-3.1.2.jar
+├── hive-service-3.1.2.jar
+├── hive-service-rpc-3.1.2.jar
+├── httpclient-4.5.2.jar
+├── httpcore-4.4.4.jar
+├── libthrift-0.9.3.jar
+└── slf4j-api-1.7.10.jar
+```
+
+SQuirreL SQL Client:
+
+![SQuirreL SQL Client](/images/hive-squirrel-client.jpg)
 
 ## Tearing Down
 

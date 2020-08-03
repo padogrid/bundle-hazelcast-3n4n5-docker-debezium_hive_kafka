@@ -48,6 +48,9 @@ if [ ! -d padogrid/etc ]; then
    mkdir -p padogrid/etc
 fi
 
+# Collect JDBC driver dependencies into padogrid/lib/jdbc
+mvn package
+
 cp $HAZELCAST_HOME/lib/hazelcast-*all-*.jar padogrid/lib/
 cp $PADOGRID_HOME/hazelcast/lib/hazelcast-addon-common*.jar padogrid/lib/
 cp $PADOGRID_HOME/hazelcast/lib/v$HAZELCAST_MAJOR_VERSION_NUMBER/hazelcast-addon-core*.jar padogrid/lib/
