@@ -116,7 +116,7 @@ Replace `host.docker.internal` in `hazelcast-client.xml` with your host IP addre
 </hazelcast-client>
 ```
 
-## Create `perf_test` app
+## Creating `perf_test` app
 
 Create and build `perf_test` for ingesting mock data into MySQL:
 
