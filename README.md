@@ -103,10 +103,12 @@ Replace `host.docker.internal` in `hazelcast-client.xml` with your host IP addre
 
 ## Create `perf_test` app
 
-Create `perf_test` for ingesting mock data into MySQL:
+Create and build `perf_test` for ingesting mock data into MySQL:
 
 ```bash
 create_app -app perf_test -name perf_test_hive
+cd_app perf_test_hive; cd bin_sh
+./build_app
 ```
 
 Set the MySQL user name and password for `perf_test_hive`:
@@ -144,7 +146,7 @@ docker-compose up
 Create the `nw` database and grant all privileges to the user `debezium`:
 
 ```bash
-cd bin_sh
+cd_docker debezium_hive_kafka; cd bin_sh
 ./create_nw_db
 ```
 
@@ -166,7 +168,7 @@ cd_app perf_test_hive; cd bin_sh
 ### 4. Run Hive Beeline CLI
 
 ```
-cd_app perf_test_hive; cd bin_sh
+cd_docker debezium_hive_kafka; cd bin_sh
 ./run_beeline
 ```
 
@@ -201,7 +203,7 @@ CREATE VIEW customers_view AS SELECT  payload.after.customerId,payload.after.add
  WHERE `__timestamp` >  1000 * to_unix_timestamp(CURRENT_TIMESTAMP - interval '15' MINUTES);
 
 -- Query customers_view
-select * from customers_view
+select * from customers_view;
 ```
 
 ### Watch topics
@@ -233,8 +235,8 @@ The last command should display the connectors that we registered previously.
 
 ```console
 [
-  "customers-sink",
   "nw-connector",
+  "customers-sink",
   "orders-sink"
 ]
 ```
@@ -244,7 +246,7 @@ The last command should display the connectors that we registered previously.
 To view the map contents, run the `read_cache` command as follows:
 
 ```console
-cd_app perf_test_hive
+cd_app perf_test_hive; cd bin_sh
 ./read_cache nw/customers
 ./read_cache nw/orders
 ```
@@ -252,6 +254,12 @@ cd_app perf_test_hive
 **Output:**
 
 ```console
+...
+        [address=Suite 579 23123 Drew Harbor, Coleburgh, OR 54795, city=Port Danica, companyName=Gulgowski-Weber, contactName=Howell, contactTitle=Forward Marketing Facilitator, country=Malaysia, customerId=000000-0878, fax=495.815.0654, phone=1-524-196-9729 x35639, postalCode=21468, region=ME]
+        [address=74311 Hane Trace, South Devonstad, IA 99977, city=East Timmyburgh, companyName=Schulist-Heidenreich, contactName=Adams, contactTitle=Education Liaison, country=Djibouti, customerId=000000-0233, fax=074.842.7598, phone=959-770-3197 x7440, postalCode=68067-2632, region=NM]
+        [address=22296 Toshia Hills, Lake Paulineport, CT 65036, city=North Lucius, companyName=Howe-Sporer, contactName=Bashirian, contactTitle=Human Construction Assistant, country=Madagascar, customerId=000000-0351, fax=(310) 746-2694, phone=284.623.1357 x04788, postalCode=73184, region=IA]
+        [address=Apt. 531 878 Rosalia Common, South So, WV 38349, city=New Marniburgh, companyName=Hintz-Muller, contactName=Beier, contactTitle=Banking Representative, country=Tuvalu, customerId=000000-0641, fax=288-872-6542, phone=(849) 149-9890, postalCode=81995, region=MI]
+...
 ```
 
 ### Desktop
