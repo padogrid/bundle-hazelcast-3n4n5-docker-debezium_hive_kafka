@@ -116,6 +116,21 @@ Replace `host.docker.internal` in `hazelcast-client.xml` with your host IP addre
 </hazelcast-client>
 ```
 
+If you will be running the Desktop app then you also need to register the `org.hazelcast.demo.nw.data.PortableFactoryImpl` class in the Hazelcast cluster. The `Customer` and `Order` classes implement the `VersionedPortable` interface.
+
+```bash
+cd_docker hazelcast
+vi padogrid/etc/hazelcast.xml
+```
+
+Add the following in the `hazelcast.xml` file.
+
+```xml
+                        <portable-factory factory-id="1">
+                        org.hazelcast.demo.nw.data.PortableFactoryImpl
+                        </portable-factory>
+```
+
 ## Creating `perf_test` app
 
 Create and build `perf_test` for ingesting mock data into MySQL:
@@ -440,18 +455,18 @@ You can also install the desktop app, browse and query the map contents. The bui
 
 ```console
 create_app -app desktop
-cd_app desktop; bin_sh
+cd_app desktop; cd bin_sh
 ./build_app
 ```
 
-Run the desktop.
+Run the desktop and login with your user ID and the default locator of localhost:5701. Password is not required.
 
 ```console
-cd bin_sh
+cd_app desktop; cd hazelcast-desktop_<version>/bin_sh
 ./desktop
 ```
 
-![Desktop Screenshot](/images/desktop-inventory-customers.png)
+![Desktop Screenshot](https://github.com/padogrid/bundle-hazelcast-3n4-docker-debezium_ksql_kafka/blob/master/images/desktop-nw-orders.jpg?raw=true)
 
 
 ### JDBC Browser
