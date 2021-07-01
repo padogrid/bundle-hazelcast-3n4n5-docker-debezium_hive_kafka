@@ -13,6 +13,9 @@ buildNumber.properties
 # vi
 *.swp
 
+# Jupyter
+.ipynb*
+
 # PadoGrid workspace
 /.addonenv.sh
 /initenv.sh
@@ -20,6 +23,7 @@ buildNumber.properties
 bundles
 lib
 plugins
+.workspace
 
 # PadoGrid workspace directories
 apps
@@ -35,3 +39,5 @@ lib
 desktop
 setenv.sh0
 build
+docker/hazelcast
+*.xml0

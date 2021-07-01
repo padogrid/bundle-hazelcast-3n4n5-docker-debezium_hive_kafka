@@ -51,4 +51,4 @@ services:
 networks:
   default:
     external:
-      name: my_network
+      name: hazelcast_default

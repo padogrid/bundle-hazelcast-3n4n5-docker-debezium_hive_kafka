@@ -82,6 +82,22 @@ create_docker -cluster hazelcast -host host.docker.internal
 cd_docker hazelcast
 ```
 
+If you named the cluster with a name other than `hazelcast`, then you need to update the `debezium_hive_kafka/docker-compose.yaml` file as follows.
+
+```bash
+cd_docker debezium_hive_kafka
+vi docker-compose.yaml
+```
+
+Change the network name from `hazelcast_default` to your Hazelcast Docker cluster name. For example, if you named the cluster name as `my_new_hazelcast` then you would enter the folllowing. Make sure it ends with the `_default` postfix.
+
+```yaml
+networks:
+  default:
+    external:
+      name: my_new_hazelcast_default
+```
+
 If you are running Docker Desktop, then the host name, `host.docker.internal`, is accessible from the containers as well as the host machine. You can run the `ping` command to check the host name.
 
 ```console
