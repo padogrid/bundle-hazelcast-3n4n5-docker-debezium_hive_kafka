@@ -21,7 +21,7 @@ buildNumber.properties
 .ipynb*
 
 # VSCode
-workspace.workspace-code
+workspace.code-workspace
 
 # PadoGrid workspace
 /.addonenv.sh
