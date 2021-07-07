@@ -212,9 +212,11 @@ cd_docker debezium_hive_kafka; cd bin_sh
 
 ### 3. Ingest mock data into the `nw.customers` and `nw.orders` tables in MySQL
 
+:exclamation: Make sure to use the group-factory-**er**.properties file. This file creates entitiy relationships which we need for joining tables later.
+
 ```bash
 cd_app perf_test_hive; cd bin_sh
-./test_group -run -db -prop ../etc/group-factory.properties
+./test_group -run -db -prop ../etc/group-factory-er.properties
 ```
 
 ### 4. Run Hive Beeline CLI
@@ -399,14 +401,14 @@ select * from orders_view;
 ...
 ```
 
-Join `customers` and `orders` (**NOT working**):
+Join `customers` and `orders` (**NOT working. Hive limitations?**):
 
 ```sql
 -- Join external tables
-select c.payload.after.customerid,c.payload.after.address,o.payload.after.orderid,o.payload.after.customerid,o.payload.after.freight from customers c inner join orders o on (c.payload.after.customerid=o.payload.after.orderid);
+select c.payload.after.customerid,c.payload.after.address,o.payload.after.orderid,o.payload.after.customerid,o.payload.after.freight from customers c inner join orders o on (c.payload.after.customerid=o.payload.after.customerid);
 
 -- Join external views
-select c.customerid,c.address,o.orderid,o.customerid,o.freight from customers_view c inner join orders_view o on (c.customerid=o.orderid);
+select c.customerid,c.address,o.orderid,o.customerid,o.freight from customers_view c inner join orders_view o on (c.customerid=o.customerid);
 ```
 
 ### Watch topics
@@ -487,10 +489,13 @@ cd_app desktop; cd hazelcast-desktop_<version>/bin_sh
 
 ### JDBC Browser
 
+#### Hive
+
 To browse Kafka stream data using Hive via JDBC, add all the jar files in the `padogrid/lib/jdbc` directory in the class path and configure your client with the following.
 
 - JDBC URL: `jdbc:hive2://localhost:10000/default`
 - Dirver Class Name: `org.apache.hive.jdbc.HiveDriver`
+- User name and password are not required.
 
 ```bash
 cd_docker debezium_hive_kafka
@@ -516,6 +521,30 @@ padogrid/lib/jdbc
 ├── libthrift-0.9.3.jar
 └── slf4j-api-1.7.10.jar
 ```
+
+#### MySQL
+
+You can configure MySQL JDBC as follows.
+
+- JDBC URL: `jdbc:mysql://localhost:3306/nw`
+- Driver Class Name: `com.mysql.cj.jdbc.Driver`
+- User: `debezium`
+- Password: `dbz`
+
+The MySQL driver is located in the `perf_test_hive/lib` directory. You need only the `mysql-*.jar` file.
+
+```bash
+cd_app pert_test_hive
+ls lib/mysql-*
+```
+
+**Output (JDBC jar file):**
+
+```console
+lib/mysql-connector-java-8.0.16.jar
+```
+
+
 
 SQuirreL SQL Client:
 
