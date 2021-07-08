@@ -401,14 +401,14 @@ select * from orders_view;
 ...
 ```
 
-Join `customers` and `orders` (**NOT working. Hive limitations?**):
+Join `customers` and `orders`.  *Note that for some reason, inner and right outer joins do not work properly and the left outer join example shown below returns inner join results.*
 
 ```sql
 -- Join external tables
-select c.payload.after.customerid,c.payload.after.address,o.payload.after.orderid,o.payload.after.customerid,o.payload.after.freight from customers c inner join orders o on (c.payload.after.customerid=o.payload.after.customerid);
+select c.payload.after.customerid,c.payload.after.address,o.payload.after.orderid,o.payload.after.customerid,o.payload.after.freight from customers c left outer join orders o on (c.payload.after.customerid=o.payload.after.customerid);
 
 -- Join external views
-select c.customerid,c.address,o.orderid,o.customerid,o.freight from customers_view c inner join orders_view o on (c.customerid=o.customerid);
+select c.customerid,c.address,o.orderid,o.customerid,o.freight from customers_view c left outer join orders_view o on (c.customerid=o.customerid);
 ```
 
 ### Watch topics
