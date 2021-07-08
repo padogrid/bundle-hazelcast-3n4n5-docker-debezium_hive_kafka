@@ -401,14 +401,62 @@ select * from orders_view;
 ...
 ```
 
-Join `customers` and `orders`.  *Note that for some reason, inner and right outer joins do not work properly and the left outer join example shown below returns inner join results.*
+Join `customers` and `orders`.
 
 ```sql
 -- Join external tables
 select c.payload.after.customerid,c.payload.after.address,o.payload.after.orderid,o.payload.after.customerid,o.payload.after.freight from customers c left outer join orders o on (c.payload.after.customerid=o.payload.after.customerid);
+```
 
+**Output:**
+
+```console
++--------------+----------------------------------------------------+--------------+--------------+----------+
+|  customerid  |                      address                       |   orderid    |  customerid  | freight  |
++--------------+----------------------------------------------------+--------------+--------------+----------+
+| 000000-0072  | Apt. 591 63049 Nicolas Courts, Port Johnathan, CA 62844 | k0000000366  | 000000-0072  | 98.69    |
+| 000000-0036  | Suite 556 2014 Robel Stream, Langoshmouth, VT 03041-5574 | k0000000186  | 000000-0036  | 60.13    |
+| 000000-0036  | Suite 556 2014 Robel Stream, Langoshmouth, VT 03041-5574 | k0000000187  | 000000-0036  | 65.44    |
+| 000000-0036  | Suite 556 2014 Robel Stream, Langoshmouth, VT 03041-5574 | k0000000188  | 000000-0036  | 9.46     |
+| 000000-0036  | Suite 556 2014 Robel Stream, Langoshmouth, VT 03041-5574 | k0000000189  | 000000-0036  | 26.06    |
+| 000000-0000  | 0653 Carter Knolls, Larondaland, IL 02519          | k0000000006  | 000000-0000  | 50.15    |
+| 000000-0000  | 0653 Carter Knolls, Larondaland, IL 02519          | k0000000007  | 000000-0000  | 26.73    |
+| 000000-0000  | 0653 Carter Knolls, Larondaland, IL 02519          | k0000000008  | 000000-0000  | 41.78    |
+| 000000-0084  | Suite 073 484 Rhea Ferry, Ivoryshire, WI 47899-8001 | k0000000426  | 000000-0084  | 96.26    |
+| 000000-0084  | Suite 073 484 Rhea Ferry, Ivoryshire, WI 47899-8001 | k0000000427  | 000000-0084  | 47.68    |
+| 000000-0084  | Suite 073 484 Rhea Ferry, Ivoryshire, WI 47899-8001 | k0000000428  | 000000-0084  | 93.65    |
+| 000000-0084  | Suite 073 484 Rhea Ferry, Ivoryshire, WI 47899-8001 | k0000000429  | 000000-0084  | 20.22    |
+| 000000-0024  | Suite 752 571 Erdman Rapids, Evanside, WV 15189    | k0000000126  | 000000-0024  | 6.83     |
+...
+```
+
+```bash
 -- Join external views
 select c.customerid,c.address,o.orderid,o.customerid,o.freight from customers_view c left outer join orders_view o on (c.customerid=o.customerid);
+```
+
+**Output:**
+
+```console
++---------------+----------------------------------------------------+--------------+---------------+------------+
+| c.customerid  |                     c.address                      |  o.orderid   | o.customerid  | o.freight  |
++---------------+----------------------------------------------------+--------------+---------------+------------+
+| 000000-0072   | Apt. 591 63049 Nicolas Courts, Port Johnathan, CA 62844 | k0000000366  | 000000-0072   | 98.69      |
+| 000000-0036   | Suite 556 2014 Robel Stream, Langoshmouth, VT 03041-5574 | k0000000186  | 000000-0036   | 60.13      |
+| 000000-0036   | Suite 556 2014 Robel Stream, Langoshmouth, VT 03041-5574 | k0000000187  | 000000-0036   | 65.44      |
+| 000000-0036   | Suite 556 2014 Robel Stream, Langoshmouth, VT 03041-5574 | k0000000188  | 000000-0036   | 9.46       |
+| 000000-0036   | Suite 556 2014 Robel Stream, Langoshmouth, VT 03041-5574 | k0000000189  | 000000-0036   | 26.06      |
+| 000000-0000   | 0653 Carter Knolls, Larondaland, IL 02519          | k0000000006  | 000000-0000   | 50.15      |
+| 000000-0000   | 0653 Carter Knolls, Larondaland, IL 02519          | k0000000007  | 000000-0000   | 26.73      |
+| 000000-0000   | 0653 Carter Knolls, Larondaland, IL 02519          | k0000000008  | 000000-0000   | 41.78      |
+| 000000-0084   | Suite 073 484 Rhea Ferry, Ivoryshire, WI 47899-8001 | k0000000426  | 000000-0084   | 96.26      |
+| 000000-0084   | Suite 073 484 Rhea Ferry, Ivoryshire, WI 47899-8001 | k0000000427  | 000000-0084   | 47.68      |
+| 000000-0084   | Suite 073 484 Rhea Ferry, Ivoryshire, WI 47899-8001 | k0000000428  | 000000-0084   | 93.65      |
+| 000000-0084   | Suite 073 484 Rhea Ferry, Ivoryshire, WI 47899-8001 | k0000000429  | 000000-0084   | 20.22      |
+| 000000-0024   | Suite 752 571 Erdman Rapids, Evanside, WV 15189    | k0000000126  | 000000-0024   | 6.83       |
+| 000000-0024   | Suite 752 571 Erdman Rapids, Evanside, WV 15189    | k0000000127  | 000000-0024   | 70.68      |
+| 000000-0024   | Suite 752 571 Erdman Rapids, Evanside, WV 15189    | k0000000130  | 000000-0024   | 89.16      |
+...
 ```
 
 ### Watch topics
