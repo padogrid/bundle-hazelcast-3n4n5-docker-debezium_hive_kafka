@@ -4,7 +4,7 @@ This bundle integrates Hazelcast with Debezium and Apache Hive for ingesting ini
 
 ## Installing Bundle
 
-This bundle supports Hazelcast 3.12.x and 4.0.
+This bundle supports Hazelcast 3.12.x and 4.x.x.
 
 ```console
 install_bundle -download bundle-hazelcast-3n4-docker-debezium_hive_kafka
