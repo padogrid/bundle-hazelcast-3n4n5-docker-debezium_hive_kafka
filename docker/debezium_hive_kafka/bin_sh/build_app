@@ -21,9 +21,12 @@ pushd $APP_DIR > /dev/null
 # Change Hazelcast version number in pom.xml and hazelcast-client.xml
 if [ $HAZELCAST_MAJOR_VERSION_NUMBER -lt 4 ]; then
    VERSION_NUMBER="3.12"
-else
+elif [ $HAZELCAST_MAJOR_VERSION_NUMBER -eq 4 ]; then
    VERSION_NUMBER="4.0"
+else
+   VERSION_NUMBER="5.0"
 fi
+
 # SED backup prefix
 if [[ ${OS_NAME} == DARWIN* ]]; then
    # Mac - space required
@@ -32,7 +35,9 @@ else
    __SED_BACKUP="0"
 fi
 sed -i${__SED_BACKUP} 's/<hazelcast.version>.*<\/hazelcast.version>/<hazelcast.version>'${VERSION_NUMBER}'<\/hazelcast.version>/' pom.xml
+rm pom.xml0
 sed -i${__SED_BACKUP} 's/hazelcast-client-config-.*.xsd/hazelcast-client-config-'${VERSION_NUMBER}'.xsd/' padogrid/etc/hazelcast-client.xml
+rm padogrid/etc/hazelcast-client.xml0
 
 # Copy the hazelcast and hazelcast-addon jar files
 if [ ! -d padogrid/lib ]; then
@@ -51,7 +56,15 @@ fi
 # Collect JDBC driver dependencies into padogrid/lib/jdbc
 mvn package
 
-cp $HAZELCAST_HOME/lib/hazelcast-*all-*.jar padogrid/lib/
+if [ $HAZELCAST_MAJOR_VERSION_NUMBER -le 4 ]; then
+   cp $HAZELCAST_HOME/lib/hazelcast-*all-*.jar padogrid/lib/
+else
+   if [ "$IS_HAZELCAST_ENTERPRISE" == "true" ]; then
+      cp $HAZELCAST_HOME/lib/hazelcast-enterprise-$HAZELCAST_MAJOR_VERSION_NUMBER*.jar padogrid/lib/
+   else
+      cp $HAZELCAST_HOME/lib/hazelcast-$HAZELCAST_MAJOR_VERSION_NUMBER*.jar padogrid/lib/
+   fi
+fi
 cp $PADOGRID_HOME/hazelcast/lib/hazelcast-addon-common*.jar padogrid/lib/
 cp $PADOGRID_HOME/hazelcast/lib/v$HAZELCAST_MAJOR_VERSION_NUMBER/hazelcast-addon-core*.jar padogrid/lib/
 cp $PADOGRID_HOME/hazelcast/plugins/v$HAZELCAST_MAJOR_VERSION_NUMBER/hazelcast-addon-core*.jar padogrid/plugins/

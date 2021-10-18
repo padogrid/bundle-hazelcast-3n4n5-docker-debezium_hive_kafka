@@ -4,10 +4,10 @@ This bundle integrates Hazelcast with Debezium and Apache Hive for ingesting ini
 
 ## Installing Bundle
 
-This bundle supports Hazelcast 3.12.x and 4.x.x.
+This bundle supports Hazelcast 3.12.x, 4.x, and 5.x.
 
 ```console
-install_bundle -download bundle-hazelcast-3n4-docker-debezium_hive_kafka
+install_bundle -download bundle-hazelcast-3n4n5-docker-debezium_hive_kafka
 ```
 
 :exclamation: If you are running this demo on WSL, make sure your workspace is on a shared folder. The Docker volume it creates will not be visible otherwise.
@@ -22,13 +22,16 @@ This use case ingests data changes made in the MySQL database into a Hazelcast c
 
 - Docker
 - Docker Compose
-- Maven
+- Maven 3.x
+- PadoGrid 0.9.12-SNAPSHOT+ (10/18/2021) - for Hazelcast 5.x only
 
 ## Optional Software
 
 - jq
 
 ## Building Demo
+
+:pencil2: This bundle builds the demo enviroment based on the Hazelcast and Management versions in your workspace. Make sure your workspace has been configured with the desired versions before building the demo environment.
 
 We must first build the demo by running the `build_app` command as shown below. This command copies the Hazelcast and `hazelcast-addon-core` jar files to the Docker container mounted volume in the `padogrid` directory so that the Hazelcast Debezium Kafka connector can include them in its class path. It also downloads the Hive JDBC driver jar and its dependencies in the `padogrid/lib/jdbc` directory.
 
@@ -45,13 +48,13 @@ tree padogrid
 ```
 
 ```console
-padogrid
+padogrid/
 ├── etc
 │   └── hazelcast-client.xml
 ├── lib
-│   ├── hazelcast-addon-common-0.9.3-SNAPSHOT.jar
-│   ├── hazelcast-addon-core-4-0.9.3-SNAPSHOT.jar
-│   ├── hazelcast-enterprise-all-4.0.1.jar
+│   ├── hazelcast-addon-common-0.9.12-SNAPSHOT.jar
+│   ├── hazelcast-addon-core-5-0.9.12-SNAPSHOT.jar
+│   ├── hazelcast-enterprise-5.0.jar
 │   └── jdbc
 │       ├── commons-logging-1.2.jar
 │       ├── curator-client-2.12.0.jar
@@ -69,7 +72,7 @@ padogrid
 │       └── slf4j-api-1.7.10.jar
 ├── log
 └── plugins
-    └── hazelcast-addon-core-4-0.9.3-SNAPSHOT-tests.jar
+    └── hazelcast-addon-core-5-0.9.12-SNAPSHOT-tests.jar
 ```
 
 
@@ -142,9 +145,9 @@ vi padogrid/etc/hazelcast.xml
 Add the following in the `hazelcast.xml` file.
 
 ```xml
-                        <portable-factory factory-id="1">
-                        org.hazelcast.demo.nw.data.PortableFactoryImpl
-                        </portable-factory>
+            <portable-factory factory-id="1">
+            org.hazelcast.demo.nw.data.PortableFactoryImpl
+            </portable-factory>
 ```
 
 ## Creating `perf_test` app
@@ -460,6 +463,21 @@ select c.customerid,c.address,o.orderid,o.customerid,o.freight from customers_vi
 ```
 
 ### Watch topics
+
+If you named the Hazlecast cluster other than `hazelcast`, then you need to update the `watch_topic` script. For example, if your cluster name is `my_new_hazelcast` as shown in the [Creating Hazelcast Docker Containers](#creating-hazelcast-docker-containers) section, then you need to update the `watch_topic` script as follows.
+
+```bash
+cd_docker debezium_hive_kafka; cd bin_sh
+vi watch_topic
+```
+
+Update `watch_topic as follows:
+
+```bash
+docker run --rm --tty --network my_new_hazelcast_default confluentinc/cp-kafkacat kafkacat -b kafka:9092 -t $1
+```
+
+Run `watch_topic` with a topic specified.
 
 ```bash
 cd_docker debezium_hive_kafka; cd bin_sh
