@@ -81,7 +81,7 @@ padogrid/
 Let's create a Hazelcast cluster to run on Docker containers as follows.
 
 ```console
-create_docker -cluster hazelcast -host host.docker.internal
+create_docker -product hazelcast -cluster hazelcast -host host.docker.internal
 cd_docker hazelcast
 ```
 
@@ -433,7 +433,7 @@ select c.payload.after.customerid,c.payload.after.address,o.payload.after.orderi
 ...
 ```
 
-```bash
+```sql
 -- Join external views
 select c.customerid,c.address,o.orderid,o.customerid,o.freight from customers_view c left outer join orders_view o on (c.customerid=o.customerid);
 ```
@@ -462,6 +462,12 @@ select c.customerid,c.address,o.orderid,o.customerid,o.freight from customers_vi
 ...
 ```
 
+**Quit Beeline:**
+
+```sql
+!quit
+```
+
 ### Watch topics
 
 If you named the Hazlecast cluster other than `hazelcast`, then you need to update the `watch_topic` script. For example, if your cluster name is `my_new_hazelcast` as shown in the [Creating Hazelcast Docker Containers](#creating-hazelcast-docker-containers) section, then you need to update the `watch_topic` script as follows.
@@ -471,7 +477,7 @@ cd_docker debezium_hive_kafka; cd bin_sh
 vi watch_topic
 ```
 
-Update `watch_topic as follows:
+Update `watch_topic` as follows:
 
 ```bash
 docker run --rm --tty --network my_new_hazelcast_default confluentinc/cp-kafkacat kafkacat -b kafka:9092 -t $1
@@ -490,6 +496,35 @@ cd_docker debezium_hive_kafka; cd bin_sh
 ```bash
 cd_docker debezium_hive_kafka; cd bin_sh
 ./run_mysql_cli
+```
+
+Run join query (the same join query that fails to return results in BeeLine):
+
+```sql
+use nw;
+select c.customerid,c.address,o.orderid,o.customerid,o.freight \
+from customers c \
+inner join orders o \
+on (c.customerid=o.customerid) order by c.customerid,o.orderid limit 10;
+```
+
+**Output:**
+
+```
++-------------+----------------------------------------------------+-------------+-------------+---------+
+| customerid  | address                                            | orderid     | customerid  | freight |
++-------------+----------------------------------------------------+-------------+-------------+---------+
+| 000000-0019 | 69781 Konopelski Union, South Cleo, NM 74341       | k0000000101 | 000000-0019 |   31.01 |
+| 000000-0019 | 69781 Konopelski Union, South Cleo, NM 74341       | k0000000102 | 000000-0019 |   53.17 |
+| 000000-0020 | Suite 405 0975 Howell Mission, Veumbury, TN 13258  | k0000000106 | 000000-0020 |   61.46 |
+| 000000-0020 | Suite 405 0975 Howell Mission, Veumbury, TN 13258  | k0000000107 | 000000-0020 |    54.4 |
+| 000000-0020 | Suite 405 0975 Howell Mission, Veumbury, TN 13258  | k0000000108 | 000000-0020 |   26.24 |
+| 000000-0020 | Suite 405 0975 Howell Mission, Veumbury, TN 13258  | k0000000109 | 000000-0020 |    2.78 |
+| 000000-0020 | Suite 405 0975 Howell Mission, Veumbury, TN 13258  | k0000000110 | 000000-0020 |   42.97 |
+| 000000-0021 | Apt. 156 647 Batz Cove, East Burton, LA 62758-5125 | k0000000111 | 000000-0021 |   73.85 |
+| 000000-0021 | Apt. 156 647 Batz Cove, East Burton, LA 62758-5125 | k0000000112 | 000000-0021 |   93.94 |
+| 000000-0021 | Apt. 156 647 Batz Cove, East Burton, LA 62758-5125 | k0000000113 | 000000-0021 |   37.97 |
++-------------+----------------------------------------------------+-------------+-------------+---------+
 ```
 
 ### Check Kafka Connect
