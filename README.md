@@ -36,7 +36,7 @@ This use case ingests data changes made in the MySQL database into a Hazelcast c
 We must first build the demo by running the `build_app` command as shown below. This command copies the Hazelcast and `hazelcast-addon-core` jar files to the Docker container mounted volume in the `padogrid` directory so that the Hazelcast Debezium Kafka connector can include them in its class path. It also downloads the Hive JDBC driver jar and its dependencies in the `padogrid/lib/jdbc` directory.
 
 ```console
-cd_docker debezium_hive_kafka; cd bin_sh
+cd_docker debezium_hive_kafka/bin_sh
 ./build_app
 ```
 
@@ -156,7 +156,7 @@ Create and build `perf_test` for ingesting mock data into MySQL:
 
 ```bash
 create_app -app perf_test -name perf_test_hive
-cd_app perf_test_hive; cd bin_sh
+cd_app perf_test_hive/bin_sh
 ./build_app
 ```
 
@@ -200,14 +200,14 @@ Execute `init_all` which performs the following:
 - Copy the Kafka handler jar file to HDFS. It is required for executing queries with joins.
 
 ```bash
-cd_docker debezium_hive_kafka; cd bin_sh
+cd_docker debezium_hive_kafka/bin_sh
 ./init_all
 ```
 
 There are three (3) Kafka connectors that we need to register. The MySQL connector is provided by Debezium and the data connectors are part of the PadoGrid distribution. 
 
 ```bash
-cd_docker debezium_hive_kafka; cd bin_sh
+cd_docker debezium_hive_kafka/bin_sh
 ./register_connector_mysql
 ./register_connector_data_customers
 ./register_connector_data_orders
@@ -218,14 +218,14 @@ cd_docker debezium_hive_kafka; cd bin_sh
 :exclamation: Make sure to use the group-factory-**er**.properties file. This file creates entitiy relationships which we need for joining tables later.
 
 ```bash
-cd_app perf_test_hive; cd bin_sh
+cd_app perf_test_hive/bin_sh
 ./test_group -run -db -prop ../etc/group-factory-er.properties
 ```
 
 ### 4. Run Hive Beeline CLI
 
 ```
-cd_docker debezium_hive_kafka; cd bin_sh
+cd_docker debezium_hive_kafka/bin_sh
 ./run_beeline
 ```
 
@@ -473,7 +473,7 @@ select c.customerid,c.address,o.orderid,o.customerid,o.freight from customers_vi
 If you named the Hazlecast cluster other than `hazelcast`, then you need to update the `watch_topic` script. For example, if your cluster name is `my_new_hazelcast` as shown in the [Creating Hazelcast Docker Containers](#creating-hazelcast-docker-containers) section, then you need to update the `watch_topic` script as follows.
 
 ```bash
-cd_docker debezium_hive_kafka; cd bin_sh
+cd_docker debezium_hive_kafka/bin_sh
 vi watch_topic
 ```
 
@@ -486,7 +486,7 @@ docker run --rm --tty --network my_new_hazelcast_default confluentinc/cp-kafkaca
 Run `watch_topic` with a topic specified.
 
 ```bash
-cd_docker debezium_hive_kafka; cd bin_sh
+cd_docker debezium_hive_kafka/bin_sh
 ./watch_topic customers
 ./watch_topic orders
 ```
@@ -494,7 +494,7 @@ cd_docker debezium_hive_kafka; cd bin_sh
 ### Run MySQL CLI
 
 ```bash
-cd_docker debezium_hive_kafka; cd bin_sh
+cd_docker debezium_hive_kafka/bin_sh
 ./run_mysql_cli
 ```
 
@@ -552,7 +552,7 @@ The last command should display the connectors that we registered previously.
 To view the map contents, run the `read_cache` command as follows:
 
 ```console
-cd_app perf_test_hive; cd bin_sh
+cd_app perf_test_hive/bin_sh
 ./read_cache nw/customers
 ./read_cache nw/orders
 ```
@@ -574,7 +574,7 @@ You can also install the desktop app, browse and query the map contents. The bui
 
 ```console
 create_app -app desktop
-cd_app desktop; cd bin_sh
+cd_app desktop/bin_sh
 ./build_app
 ```
 
