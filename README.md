@@ -4,6 +4,8 @@ This bundle integrates Hazelcast with Debezium and Apache Hive for ingesting ini
 
 ## Installing Bundle
 
+![PadoGrid](https://github.com/padogrid/padogrid/raw/develop/images/padogrid-3d-16x16.png) [*Driven by PadoGrid*](https://github.com/padogrid)
+
 This bundle supports Hazelcast 3.12.x, 4.x, and 5.x.
 
 ```console
