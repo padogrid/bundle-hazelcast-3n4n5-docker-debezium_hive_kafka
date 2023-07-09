@@ -26,7 +26,6 @@ This use case ingests data changes made in the MySQL database into a Hazelcast c
 - Docker
 - Docker Compose
 - Maven 3.x
-- PadoGrid 0.9.12-SNAPSHOT+ (10/18/2021) - for Hazelcast 5.x only
 
 ## Optional Software
 
@@ -36,7 +35,17 @@ This use case ingests data changes made in the MySQL database into a Hazelcast c
 
 :pencil2: This bundle builds the demo enviroment based on the Hazelcast and Management versions in your workspace. Make sure your workspace has been configured with the desired versions before building the demo environment.
 
-We must first build the demo by running the `build_app` command as shown below. This command copies the Hazelcast and `hazelcast-addon-core` jar files to the Docker container mounted volume in the `padogrid` directory so that the Hazelcast Debezium Kafka connector can include them in its class path. It also downloads the Hive JDBC driver jar and its dependencies in the `padogrid/lib/jdbc` directory.
+First, change your cluster context to a Hazelcast cluster. This is required in order to configure the Hazelcast Docker containers.
+
+```bash
+# Create a Hazelcast cluster if it does not already exist.
+make_cluster -product hazelcast
+
+# Switch context
+switch_cluster myhz
+```
+
+Now, build the demo by running the `build_app` command as shown below. This command copies the Hazelcast and `hazelcast-addon-core` jar files to the Docker container mounted volume in the `padogrid` directory so that the Hazelcast Debezium Kafka connector can include them in its class path. It also downloads the Hive JDBC driver jar and its dependencies in the `padogrid/lib/jdbc` directory.
 
 ```console
 cd_docker debezium_hive_kafka/bin_sh
@@ -55,9 +64,9 @@ padogrid/
 ├── etc
 │   └── hazelcast-client.xml
 ├── lib
-│   ├── hazelcast-addon-common-0.9.12-SNAPSHOT.jar
-│   ├── hazelcast-addon-core-5-0.9.12-SNAPSHOT.jar
-│   ├── hazelcast-enterprise-5.0.jar
+│   ├── hazelcast-addon-common-0.9.27.jar
+│   ├── hazelcast-addon-core-5-0.9.27.jar
+│   ├── hazelcast-enterprise-5.3.1.jar
 │   └── jdbc
 │       ├── commons-logging-1.2.jar
 │       ├── curator-client-2.12.0.jar
@@ -75,7 +84,7 @@ padogrid/
 │       └── slf4j-api-1.7.10.jar
 ├── log
 └── plugins
-    └── hazelcast-addon-core-5-0.9.12-SNAPSHOT-tests.jar
+    └── hazelcast-addon-core-5-0.9.27-tests.jar
 ```
 
 
@@ -573,18 +582,16 @@ cd_app perf_test_hive/bin_sh
 
 ### Desktop
 
-You can also install the desktop app, browse and query the map contents. The build_app script configures and deploys all the necessary files for this demo.
+You can also install the desktop app and query the map contents.
 
 ```console
-create_app -app desktop
-cd_app desktop/bin_sh
-./build_app
+create_app -product hazelcast -app desktop
 ```
 
 Run the desktop and login with your user ID and the default locator of localhost:5701. Password is not required.
 
 ```console
-cd_app desktop; cd hazelcast-desktop_<version>/bin_sh
+cd_app desktop/bin_sh
 ./desktop
 ```
 
