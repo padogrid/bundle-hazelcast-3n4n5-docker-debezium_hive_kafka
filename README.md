@@ -43,7 +43,7 @@ First, change your cluster context to a Hazelcast cluster. This is required in o
 
 ```bash
 # Create a Hazelcast cluster if it does not already exist.
-make_cluster -product hazelcast
+create_cluster -product hazelcast
 
 # Switch context
 switch_cluster myhz
