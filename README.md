@@ -3,7 +3,7 @@
 ---
 
 <!-- Platforms -->
-[![Host OS](https://github.com/padogrid/padogrid/wiki/images/padogrid-host-os.drawio.svg)](https://github.com/padogrid/padogrid/wiki/Platform-Host-OS)
+[![PadoGrid 1.x](https://github.com/padogrid/padogrid/wiki/images/padogrid-padogrid-1.x.drawio.svg)](https://github.com/padogrid/padogrid/wiki/Platform-PadoGrid-1.x) [![Host OS](https://github.com/padogrid/padogrid/wiki/images/padogrid-host-os.drawio.svg)](https://github.com/padogrid/padogrid/wiki/Platform-Host-OS)
 
 # Debezium-Hive-Kafka Hazelcast Connector
 
@@ -17,7 +17,8 @@ This bundle supports Hazelcast 3.12.x, 4.x, and 5.x.
 install_bundle -download bundle-hazelcast-3n4n5-docker-debezium_hive_kafka
 ```
 
-:exclamation: If you are running this demo on WSL, make sure your workspace is on a shared folder. The Docker volume it creates will not be visible otherwise.
+❗️ If you are running this bundle on WSL, make sure your workspace is on a shared folder. The Docker volume it creates will not be visible outside of WSL otherwise.
+
 
 ## Use Case
 
@@ -208,7 +209,7 @@ cd_docker debezium_hive_kafka
 docker-compose up
 ```
 
-:exclamation: Wait till all the containers are up before executing the `init_all` script.
+❗️ Wait till all the containers are up before executing the `init_all` script.
 
 Execute `init_all` which performs the following:
 
@@ -231,7 +232,7 @@ cd_docker debezium_hive_kafka/bin_sh
 
 ### 3. Ingest mock data into the `nw.customers` and `nw.orders` tables in MySQL
 
-:exclamation: Make sure to use the group-factory-**er**.properties file. This file creates entitiy relationships which we need for joining tables later.
+❗️ Make sure to use the group-factory-**er**.properties file. This file creates entitiy relationships which we need for joining tables later.
 
 ```bash
 cd_app perf_test_hive/bin_sh
