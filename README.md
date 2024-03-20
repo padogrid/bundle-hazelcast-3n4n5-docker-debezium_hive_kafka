@@ -3,7 +3,7 @@
 ---
 
 <!-- Platforms -->
-[![PadoGrid 1.x](https://github.com/padogrid/padogrid/wiki/images/padogrid-padogrid-1.x.drawio.svg)](https://github.com/padogrid/padogrid/wiki/Platform-PadoGrid-1.x) [![Host OS](https://github.com/padogrid/padogrid/wiki/images/padogrid-host-os.drawio.svg)](https://github.com/padogrid/padogrid/wiki/Platform-Host-OS)
+[![PadoGrid 1.x](https://github.com/padogrid/padogrid/wiki/images/padogrid-padogrid-1.x.drawio.svg)](https://github.com/padogrid/padogrid/wiki/Platform-PadoGrid-1.x) [![Host OS](https://github.com/padogrid/padogrid/wiki/images/padogrid-host-os.drawio.svg)](https://github.com/padogrid/padogrid/wiki/Platform-Host-OS) [![Docker](https://github.com/padogrid/padogrid/wiki/images/padogrid-docker.drawio.svg)](https://github.com/padogrid/padogrid/wiki/Platform-Docker) 
 
 # Debezium-Hive-Kafka Hazelcast Connector
 
@@ -29,8 +29,8 @@ This use case ingests data changes made in the MySQL database into a Hazelcast c
 ## Required Software
 
 - Docker
-- Docker Compose
 - Maven 3.x
+- Hazelcast 3.12.x, 4.x, or 5.x
 
 ## Optional Software
 
@@ -38,7 +38,7 @@ This use case ingests data changes made in the MySQL database into a Hazelcast c
 
 ## Building Demo
 
-:pencil2: This bundle builds the demo enviroment based on the Hazelcast and Management versions in your workspace. Make sure your workspace has been configured with the desired versions before building the demo environment.
+✏️  *This bundle builds the demo enviroment based on the Hazelcast and Management versions in your workspace. Make sure your workspace has been configured with the desired versions before building the demo environment.*
 
 First, change your cluster context to a Hazelcast cluster. This is required in order to configure the Hazelcast Docker containers.
 
@@ -65,94 +65,52 @@ tree padogrid
 ```
 
 ```console
-padogrid/
+padogrid
 ├── etc
 │   └── hazelcast-client.xml
 ├── lib
-│   ├── hazelcast-addon-common-0.9.27.jar
-│   ├── hazelcast-addon-core-5-0.9.27.jar
-│   ├── hazelcast-enterprise-5.3.1.jar
-│   └── jdbc
-│       ├── commons-logging-1.2.jar
-│       ├── curator-client-2.12.0.jar
-│       ├── guava-19.0.jar
-│       ├── hadoop-common-2.6.0.jar
-│       ├── hive-common-3.1.2.jar
-│       ├── hive-jdbc-3.1.2.jar
-│       ├── hive-metastore-3.1.2.jar
-│       ├── hive-serde-3.1.2.jar
-│       ├── hive-service-3.1.2.jar
-│       ├── hive-service-rpc-3.1.2.jar
-│       ├── httpclient-4.5.2.jar
-│       ├── httpcore-4.4.4.jar
-│       ├── libthrift-0.9.3.jar
-│       └── slf4j-api-1.7.10.jar
+│   ├── hazelcast-addon-common-1.0.0.jar
+│   ├── hazelcast-addon-core-5-1.0.0.jar
+│   ├── hazelcast-enterprise-5.3.6.jar
+│   ├── jdbc
+│   │   ├── commons-logging-1.2.jar
+│   │   ├── curator-client-2.12.0.jar
+│   │   ├── guava-19.0.jar
+│   │   ├── hadoop-common-2.6.0.jar
+│   │   ├── hive-common-3.1.2.jar
+│   │   ├── hive-jdbc-3.1.2.jar
+│   │   ├── hive-metastore-3.1.2.jar
+│   │   ├── hive-serde-3.1.2.jar
+│   │   ├── hive-service-3.1.2.jar
+│   │   ├── hive-service-rpc-3.1.2.jar
+│   │   ├── httpclient-4.5.2.jar
+│   │   ├── httpcore-4.4.4.jar
+│   │   ├── libthrift-0.9.3.jar
+│   │   └── slf4j-api-1.7.10.jar
+│   └── padogrid-common-1.0.0.jar
 ├── log
 └── plugins
-    └── hazelcast-addon-core-5-0.9.27-tests.jar
+    └── hazelcast-addon-core-5-1.0.0-tests.jar
 ```
 
+## Creating `my_network`
+
+Let's create the `my_network` network to which all containers will join.
+
+```bash
+docker network create my_network
+```
 
 ## Creating Hazelcast Docker Containers
 
-Let's create a Hazelcast cluster to run on Docker containers as follows.
+Let's create a Hazelcast cluster to run on Docker containers with the `my_network` network we created in the previous section.
 
 ```console
-create_docker -product hazelcast -cluster hazelcast -host host.docker.internal
+create_docker -product hazelcast -cluster hazelcast -network my_network
 cd_docker hazelcast
 ```
 
-If you named the cluster with a name other than `hazelcast`, then you need to update the `debezium_hive_kafka/docker-compose.yaml` file as follows.
-
-```bash
-cd_docker debezium_hive_kafka
-vi docker-compose.yaml
-```
-
-Change the network name from `hazelcast_default` to your Hazelcast Docker cluster name. For example, if you named the cluster name as `my_new_hazelcast` then you would enter the folllowing. Make sure it ends with the `_default` postfix.
-
-```yaml
-networks:
-  default:
-    external:
-      name: my_new_hazelcast_default
-```
-
-If you are running Docker Desktop, then the host name, `host.docker.internal`, is accessible from the containers as well as the host machine. You can run the `ping` command to check the host name.
-
-```console
-ping host.docker.internal
-```
-
-If `host.docker.internal` is not defined then you will need to use the host IP address that can be accessed from both the Docker containers and the host machine. Run `create_docker -?` or `man create_docker` to see the usage.
-
-```console
-create_docker -?
-```
-
-If you are using a host IP other than `host.docker.internal` then you must also make the change in the Debezium Hazelcast connector configuration file as follows.
-
-```console
-cd_docker debezium_hive_kafka
-vi padogrid/etc/hazelcast-client.xml
-```
-
-Replace `host.docker.internal` in `hazelcast-client.xml` with your host IP address.
-
-```xml
-<hazelcast-client ...>
-   ...
-   <network>
-      <cluster-members>
-         <address>host.docker.internal:5701</address>
-         <address>host.docker.internal:5702</address>
-      </cluster-members>
-   </network>
-   ...
-</hazelcast-client>
-```
-
-If you will be running the Desktop app then you also need to register the `org.hazelcast.demo.nw.data.PortableFactoryImpl` class in the Hazelcast cluster. The `Customer` and `Order` classes implement the `VersionedPortable` interface.
+If you will be running the [Hazelcast Desktop](#hazelcast-desktop) app then you need to register the `org.hazelcast.demo.nw.data.PortableFactoryImpl` class in the Hazelcast cluster. The `Customer` and `Order` classes implement the `VersionedPortable` interface.
 
 ```bash
 cd_docker hazelcast
@@ -191,13 +149,35 @@ Set user name and password as follows:
                 <property name="connection.password">dbz</property>
 ```
 
+## Kafka Connect
+
+The Kafka Connect container listens on Kafka streams for database updates and converts them to Hazelcast objects before updating the Hazelcast cluster. Take a look at the `client-cache.xml` file which is loaded by the Kafka Connect container to connect to the Hazelcast cluster. As you can see from below, the member addresses are set to `hazelcast-server1-1` and `hazelcast-server2-1` which are the host names of the Hazelcast members set by Docker Compose.
+
+```bash
+cd_docker debezium_hive_kafka
+cat padogrid/etc/client-cache.xml
+```
+
+Output:
+
+```xml
+    ...
+	<network>
+		<cluster-members>
+			<address>hazelcast-server1-1:5701</address>
+			<address>hazelcast-server2-1:5701</address>
+		</cluster-members>
+	</network>
+    ...
+```
+
 ## Starting Docker Containers
 
 ### 1. Start Hazelcast
 
 ```bash
 cd_docker hazelcast
-docker-compose up
+docker compose up -d
 ```
 
 ### 2. Start Debezium
@@ -206,7 +186,7 @@ Start Zookeeper, Kafka, MySQL, Kafka Connect, Apache Hive containers:
 
 ```bash
 cd_docker debezium_hive_kafka
-docker-compose up
+docker compose up -d
 ```
 
 ❗️ Wait till all the containers are up before executing the `init_all` script.
@@ -487,19 +467,6 @@ select c.customerid,c.address,o.orderid,o.customerid,o.freight from customers_vi
 
 ### Watch topics
 
-If you named the Hazlecast cluster other than `hazelcast`, then you need to update the `watch_topic` script. For example, if your cluster name is `my_new_hazelcast` as shown in the [Creating Hazelcast Docker Containers](#creating-hazelcast-docker-containers) section, then you need to update the `watch_topic` script as follows.
-
-```bash
-cd_docker debezium_hive_kafka/bin_sh
-vi watch_topic
-```
-
-Update `watch_topic` as follows:
-
-```bash
-docker run --rm --tty --network my_new_hazelcast_default confluentinc/cp-kafkacat kafkacat -b kafka:9092 -t $1
-```
-
 Run `watch_topic` with a topic specified.
 
 ```bash
@@ -585,7 +552,7 @@ cd_app perf_test_hive/bin_sh
 ...
 ```
 
-### Desktop
+### Hazelcast Desktop
 
 You can also install the desktop app and query the map contents.
 
@@ -671,11 +638,11 @@ SQuirreL SQL Client:
 ```console
 # Shutdown Debezium containers
 cd_docker debezium_hive_kafka
-docker-compose down
+docker compose down
 
 # Shutdown Hazelcast containers
 cd_docker hazelcast
-docker-compose down
+docker compose down
 
 # Prune all stopped containers 
 docker container prune
