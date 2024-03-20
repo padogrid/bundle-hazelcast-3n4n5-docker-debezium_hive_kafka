@@ -644,6 +644,9 @@ docker compose down
 cd_docker hazelcast
 docker compose down
 
+# Remove my_network
+docker network rm my_network
+
 # Prune all stopped containers 
 docker container prune
 ```
