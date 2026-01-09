@@ -10,7 +10,7 @@
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<hive.version>3.1.2</hive.version>
+		<hive.version>4.0.0</hive.version>
 	</properties>
 
 	<dependencies>
